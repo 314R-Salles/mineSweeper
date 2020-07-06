@@ -1,5 +1,6 @@
 int[][] mines = new int[10][10];
 char[][] plateau = new char[10][10];
+boolean gameOver = false;
 
 void setup() {
   size(800, 800);
@@ -13,21 +14,24 @@ void setup() {
       line(0, j*100, 800, j*100);
     }
   }
+  mines[1][1] = mines[8][8] = mines[8][1] = mines[1][8] = 0 ;
 }
 
 void draw() {}
 
 void mouseClicked() {
-  unveil(mouseX/100, mouseY/100);
+  if (!gameOver) {
+  unveil(mouseX/100 +1, mouseY/100 +1);
   checkWin();
+  }
 }
 
 void unveil(int x, int y) {
-  x++; y++;
   if (mines[y][x] != 1) {
     plateau[y][x] = (char) (sum(x, y) + 48);
     text(plateau[y][x], (x-0.72)*100, (y-0.28)*100);
   } else {
+    gameOver = true;
     displayMines(255,0,0);
   }
 }
