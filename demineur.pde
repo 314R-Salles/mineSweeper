@@ -5,10 +5,33 @@ int minesNumber = 0;
 PImage mine;
 
 void setup() {
-  background(150);
+
   mine = loadImage("mine.png");
   size(1000, 800);
 
+  initialize();
+}
+
+void draw() {
+}
+
+void mouseClicked() {
+  if (!gameOver && mouseX<=800) {
+    unveil(mouseX/100 +1, mouseY/100 +1);
+    checkWin();
+  } else if (mouseX>820 && mouseX<980 && mouseY>700 && mouseY<750) {
+    initialize();
+  }
+}
+
+void initialize() {
+
+  // reset game properties
+  minesNumber=0;
+  gameOver = false;
+
+  // clear screen
+  background(150);
 
   for (int j=1; j<9; j++) {
     for (int i=1; i<9; i++) {
@@ -26,19 +49,14 @@ void setup() {
     }
   }
   textSize(30);
+  fill(255, 0, 0); // red
+  rect(820, 700, 160, 50);
+  fill(255); // white
   text("Mines: " + minesNumber, 820, 50);
+  text("Restart", 850, 735);
   textSize(50);
 }
 
-void draw() {
-}
-
-void mouseClicked() {
-  if (!gameOver && mouseX<=800) {
-    unveil(mouseX/100 +1, mouseY/100 +1);
-    checkWin();
-  }
-}
 
 void unveil(int x, int y) {
   if (mines[y][x] != 1) {
@@ -46,9 +64,10 @@ void unveil(int x, int y) {
     text(plateau[y][x], (x-0.72)*100, (y-0.28)*100);
   } else {
     gameOver = true;
-    displayMines(255, 0, 0);
+    displayMines();
     textSize(30);
-    text("¯\\_(°~°)_/¯", 820, 700);
+    fill(255, 0, 0); // red
+    text("¯\\_(°~°)_/¯", 820, 670);
   }
 }
 
@@ -56,12 +75,10 @@ int sum(int x, int y) {
   return mines[y-1][x-1] + mines[y-1][x] + mines[y-1][x+1]+ mines[y][x-1] + mines[y][x+1] + mines[y+1][x-1] + mines[y+1][x] + mines[y+1][x+1];
 }
 
-void displayMines(int r, int g, int b) {
-  fill(r, g, b);
+void displayMines() {
   for (int j=1; j<9; j++) {
     for (int i=1; i<9; i++) {
       if ( mines[j][i] == 1) {
-        //text('X', (i-0.72)*100, (j-0.28)*100);
         image(mine, (i-1)*100+25, (j-1)*100+25, 50, 50);
       }
     }
@@ -76,7 +93,8 @@ void checkWin() {
     }
   }
   if (sum == 64) { 
-    displayMines(130, 255, 130);
-    text("Bravo", 820, 700);
+    fill(130, 255, 130); // green 
+    displayMines();
+    text("Bravo", 830, 670);
   }
 }
