@@ -1,10 +1,14 @@
 int[][] mines = new int[10][10];
 char[][] plateau = new char[10][10];
 boolean gameOver = false;
+int minesNumber = 0;
+PImage mine;
 
 void setup() {
-  size(800, 800);
-  textSize(50);
+  background(150);
+  mine = loadImage("mine.png");
+  size(1000, 800);
+
 
   for (int j=1; j<9; j++) {
     for (int i=1; i<9; i++) {
@@ -15,14 +19,24 @@ void setup() {
     }
   }
   mines[1][1] = mines[8][8] = mines[8][1] = mines[1][8] = 0 ;
+
+  for (int j=1; j<9; j++) {
+    for (int i=1; i<9; i++) {
+      minesNumber += mines[j][i];
+    }
+  }
+  textSize(30);
+  text("Mines: " + minesNumber, 820, 50);
+  textSize(50);
 }
 
-void draw() {}
+void draw() {
+}
 
 void mouseClicked() {
-  if (!gameOver) {
-  unveil(mouseX/100 +1, mouseY/100 +1);
-  checkWin();
+  if (!gameOver && mouseX<=800) {
+    unveil(mouseX/100 +1, mouseY/100 +1);
+    checkWin();
   }
 }
 
@@ -32,7 +46,9 @@ void unveil(int x, int y) {
     text(plateau[y][x], (x-0.72)*100, (y-0.28)*100);
   } else {
     gameOver = true;
-    displayMines(255,0,0);
+    displayMines(255, 0, 0);
+    textSize(30);
+    text("¯\\_(°~°)_/¯", 820, 700);
   }
 }
 
@@ -44,21 +60,23 @@ void displayMines(int r, int g, int b) {
   fill(r, g, b);
   for (int j=1; j<9; j++) {
     for (int i=1; i<9; i++) {
-      if ( mines[j][i] == 1)
-        text('X', (i-0.72)*100, (j-0.28)*100);
+      if ( mines[j][i] == 1) {
+        //text('X', (i-0.72)*100, (j-0.28)*100);
+        image(mine, (i-1)*100+25, (j-1)*100+25, 50, 50);
+      }
     }
   }
 }
 
 void checkWin() {
-  int sum = 0;
+  int sum = minesNumber;
   for (int j=1; j<9; j++) {
     for (int i=1; i<9; i++) {
-      sum += mines[j][i];
       sum += plateau[j][i] != ' ' ? 1 : 0;
     }
   }
   if (sum == 64) { 
-    displayMines(0,255,0);
+    displayMines(130, 255, 130);
+    text("Bravo", 820, 700);
   }
 }
