@@ -59,10 +59,12 @@ void initialize() {
 
 
 void unveil(int x, int y) {
-  if (mines[y][x] != 1) {
-    plateau[y][x] = (char) (sum(x, y) + 48);
+  if (mines[y][x] != 1 && plateau[y][x] == ' ') {
+    int minesAround = sum(x, y);
+    plateau[y][x] = (char) ( minesAround + 48);
     text(plateau[y][x], (x-0.72)*100, (y-0.28)*100);
-  } else {
+    if (minesAround == 0) unveil0(x,y);
+  } else if (mines[y][x] == 1) {
     gameOver = true;
     displayMines();
     textSize(30);
@@ -73,6 +75,17 @@ void unveil(int x, int y) {
 
 int sum(int x, int y) {
   return mines[y-1][x-1] + mines[y-1][x] + mines[y-1][x+1]+ mines[y][x-1] + mines[y][x+1] + mines[y+1][x-1] + mines[y+1][x] + mines[y+1][x+1];
+}
+
+void unveil0(int x, int y) {
+  unveil(x-1, y-1);
+  unveil(x-1, y);
+  unveil(x-1, y+1);
+  unveil(x, y-1);
+  unveil(x, y+1);
+  unveil(x+1, y-1);
+  unveil(x+1, y);
+  unveil(x+1, y+1);
 }
 
 void displayMines() {
